@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\category;
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class CategoryController extends Controller
@@ -15,11 +15,9 @@ class CategoryController extends Controller
     public function index()
     {
         //
-        $categories = category::all(); 
-        return view('category.index',['data' => $categories]);   
-        
+        $data = Category::all();
+        return view('admin.category.index',['data' =>$data ]);
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -28,9 +26,8 @@ class CategoryController extends Controller
      */
     public function create()
     {
-        return view('category.create');
-
-
+        //
+        return view('admin.category.create');
     }
 
     /**
@@ -41,63 +38,66 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        
-        $category = new category ;
+        //
+
+        $category = new Category;
         $category->title = $request->input('title');
-        $category->des = $request->input('des');
         $category->save();
-        return redirect('/category');
+        return redirect('admin/category')->with('success', '1 category added !!');
+    
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\category  $category
+     * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function show(category $category)
+    public function show(Category $category)
     {
-
-
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\category  $category
+     * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function edit($catid)
+    public function edit($id)
     {
-        $data = category::find($catid);
-        return view('category.edit',['data' => $data]);
+            $data = Category::where('id',$id)->first();
+            return view('admin.category.edit',['data'=>$data]);
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\category  $category
+     * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, category $category)
+    public function update(Request $request, Category $category)
     {
-
-       // category::where('id',$id)->update(['english_name' => $english_name,'name' => $name]);
-    
+        //
+        $id = $request->input('id');
+        $title = $request->input('title');
+        Category::where('id',$id)->update(['title' =>$title]);
+        return redirect('admin/category');
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\category  $category
+     * @param  \App\Models\Category  $category
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
-
-        $data = category::find($id);
+        //
+        $data = Category::find($id);
         $data->delete();
-        return redirect('/category');
+        return redirect('admin/category')->with('danger', '1 Category Removed Successfully !');
+        
     }
 }
