@@ -59,7 +59,28 @@ class OrdersController extends Controller
         $data2 = Category::all();
         return view('checkout.orderConfirm',['data2' => $data2, 'title' => 'ORDER CONFRIMED','data'=>$data,'ordernumber'=>$id]);
      }
-        
+
+
+     public function GetAllOrders(){
+         $orders = Orders::all();
+         return view('admin.order.index',['orders'=>$orders]);
+     }
+     public function orderStatus(Request $request){
+        $id = $request->input('id');
+        $status = $request->input('status');
+        Orders::where('id',$id)->update(['status' =>$status]);
+        return redirect('admin/order')->with('Success','Order Status Updated');
+    }
+
+    public function GetOrderDetails($id){
+         $order = Orders::where('id',$id)->first();
+
+        $order_details = OrderDetail::where('orderid',$id)->get();
+         return view('admin.order.details',['order'=>$order , 'order_details'=>$order_details]);
+
+
+    
+    }
 
 
 

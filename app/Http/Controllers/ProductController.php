@@ -60,7 +60,7 @@ class ProductController extends Controller
     {
         //
 
-        $comments = comment::where('productid',$id)->get();
+        $comments = comment::where('productid',$id)->where('status',1)->get();
         $data2 = Category::all();
         $data = Product::where('id',$id)->first();
         $cat = Category::where('id', $data->catid)->first();
@@ -161,7 +161,8 @@ class ProductController extends Controller
         $id = $request->input('id');
         $title = $request->input('title');
         $des = $request->input('des');
-        Product::where('id',$id)->update(['title' =>$title, 'des' => $des]);
+        $price = $request->input('price');
+        Product::where('id',$id)->update(['title' =>$title, 'des' => $des,'price'=>$price]);
         return redirect('admin/product');
     }
 
@@ -188,6 +189,21 @@ class ProductController extends Controller
         $comment->save();
         return redirect()->back()->with('success', 'Comment Posted');
      
+    }
+
+    public function getcomments(){
+        return view('admin.comment.index');
+    }
+    public function commentStatus(Request $request){
+        $id = $request->input('id');
+        $status = $request->input('status');
+        Comment::where('id',$id)->update(['status' =>$status]);
+        return redirect('admin/comment');
+    }
+
+    public function admin()
+    {
+        return redirect('/admin/product');
     }
 
  
